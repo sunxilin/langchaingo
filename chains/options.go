@@ -34,6 +34,10 @@ type chainCallOption struct {
 	MaxLength int
 	// RepetitionPenalty is the repetition penalty for sampling in an LLM call.
 	RepetitionPenalty float64
+	// FrequencyPenalty is the frequency penalty for sampling.
+	FrequencyPenalty float64
+	// PresencePenalty is the presence penalty for sampling.
+	PresencePenalty float64
 	// CallbackHandler is the callback handler for Chain
 	CallbackHandler callbacks.Handler
 }
@@ -115,6 +119,20 @@ func WithRepetitionPenalty(repetitionPenalty float64) ChainCallOption {
 	}
 }
 
+// WithFrequencyPenalty will add an option to set the frequency penalty for sampling.
+func WithFrequencyPenalty(frequencyPenalty float64) ChainCallOption {
+	return func(o *chainCallOption) {
+		o.FrequencyPenalty = frequencyPenalty
+	}
+}
+
+// WithPresencePenalty will add an option to set the presence penalty for sampling.
+func WithPresencePenalty(presencePenalty float64) ChainCallOption {
+	return func(o *chainCallOption) {
+		o.PresencePenalty = presencePenalty
+	}
+}
+
 // WithStopWords is an option for setting the stop words for LLM.Call.
 func WithStopWords(stopWords []string) ChainCallOption {
 	return func(o *chainCallOption) {
@@ -153,6 +171,8 @@ func getLLMCallOptions(options ...ChainCallOption) []llms.CallOption {
 		llms.WithMinLength(opts.MinLength),
 		llms.WithMaxLength(opts.MaxLength),
 		llms.WithRepetitionPenalty(opts.RepetitionPenalty),
+		llms.WithFrequencyPenalty(opts.FrequencyPenalty),
+		llms.WithPresencePenalty(opts.PresencePenalty),
 	}
 
 	return chainCallOption
